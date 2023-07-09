@@ -8,15 +8,20 @@ WiFiAP::WiFiAP(String ssid, String password)
     ssidAP = ssid;
     passwordAP = password;
 
-    IPAddress ip(10,0,0,1);
-    IPAddress gateway(10,0,0,1);
-    IPAddress subnet(255,255,255,0);
-
-    WiFi.softAPConfig(ip, gateway, subnet);
+    WiFi.mode(WIFI_AP);
 }
 
 void WiFiAP::Start() {
-    WiFi.softAP(ssidAP, passwordAP);
+    if(WiFi.softAP(ssidAP, passwordAP) == true)
+    {
+        Serial.println();
+        Serial.println("Access Point is created with SSID: " + ssidAP);
+        Serial.println("Access Point IP: " + String(WiFiAP::GetIP()));
+    }
+    else
+    {
+        Serial.println("Unable to Create Access Point");
+    }
 };
 
 String WiFiAP::GetIP() {
