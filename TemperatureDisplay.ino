@@ -5,6 +5,7 @@
 #include "WiFiAP.h"
 #include "WiFiSTA.h"
 #include "WebServer.h"
+#include "Sensor.h"
 
 #include "Arduino.h"
 #include "ESP8266WiFi.h"
@@ -14,12 +15,13 @@ String currentIP;
 
 // Indicates that the system is on turn on and off every 1000 milliseconds
 LED systemLED(2, 1000, 1000);
-LED secondLED(16, 200, 200);
+
+Sensor sensor;
 
 // Open access point with ssid and password in arguments
-WiFiAP accessPoint("TemperatureDisplayWiFi", "!1q2w3e4R!");
+//WiFiAP accessPoint("TemperatureDisplayWiFi", "!1q2w3e4R!");
 
-//WiFiSTA wifiClient("ssid", "password");
+WiFiSTA wifiClient("ssid", "password");
 
 WebServer webServer;
 
@@ -29,11 +31,11 @@ void setup() {
     Serial.println("");
     Serial.println("Starting please wait");
     
-    //wifiClient.Start();
+    wifiClient.Start();
 
     // Start access point and remember the current ip
-    accessPoint.Start();
-    currentIP = accessPoint.GetIP();
+    //accessPoint.Start();
+    //currentIP = accessPoint.GetIP();
 
     webServer.Configure();
     webServer.Start();
@@ -42,5 +44,6 @@ void setup() {
 // Run the program 
 void loop() {
     systemLED.Update();
-    secondLED.Update();
+    sensor.GetTemperature();
+    delay(1000);
 }
