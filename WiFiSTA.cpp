@@ -10,6 +10,12 @@ WiFiSTA::WiFiSTA(String ssid, String password)
 }
 
 void WiFiSTA::Start() {
+
+    WiFi.softAPdisconnect();
+    WiFi.disconnect();
+
+    WiFi.mode(WIFI_STA);
+
     WiFi.begin(ssidAP, passwordAP);
 
     Serial.println("");

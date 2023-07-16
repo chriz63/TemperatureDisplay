@@ -7,11 +7,15 @@ WiFiAP::WiFiAP(String ssid, String password)
 {
     ssidAP = ssid;
     passwordAP = password;
-
-    WiFi.mode(WIFI_AP);
 }
 
 void WiFiAP::Start() {
+
+    WiFi.disconnect();
+    WiFi.softAPdisconnect();
+    
+    WiFi.mode(WIFI_AP);
+
     if(WiFi.softAP(ssidAP, passwordAP) == true)
     {
         Serial.println();

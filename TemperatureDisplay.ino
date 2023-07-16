@@ -2,12 +2,13 @@
 
 // All imports that are needed
 #include "LED.h"
+#include "Display.h"
 #include "DisplayButton.h"
-#include "WiFiAP.h"
-#include "WiFiSTA.h"
+#include "WiFiService.h"
+#include "WiFiButton.h"
 #include "WebServer.h"
 #include "Sensor.h"
-#include "Display.h"
+
 
 #include "Arduino.h"
 #include "ESP8266WiFi.h"
@@ -24,10 +25,9 @@ Display display(2000,100, sensor);
 
 DisplayButton displayButton(0, display);
 
-// Open access point with ssid and password in arguments
-//WiFiAP accessPoint("TemperatureDisplayWiFi", "!1q2w3e4R!");
+WiFiService wifiService(display);
 
-WiFiSTA wifiClient("ssid", "password");
+WiFiButton wifiButton(14, wifiService);
 
 WebServer webServer(sensor);
 
@@ -41,12 +41,9 @@ void setup() {
     Serial.println("");
     Serial.println("Starting please wait");
 
-    
-    wifiClient.Start();
-
-    // Start access point and remember the current ip
-    //accessPoint.Start();
-    //currentIP = accessPoint.GetIP();
+    // Start in STA Mode for default
+    // this mode can be changed later by pressing a button
+    wifiService.APMode();
 
     webServer.Configure();
     webServer.Start();
@@ -58,4 +55,5 @@ void loop() {
     display.Update();
     webServer.Update();
     displayButton.Observe();
+    wifiButton.Observe();
 }

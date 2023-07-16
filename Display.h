@@ -28,9 +28,12 @@ class Display
         void ShowStartPage();
         void ShowWiFiPage();
         void ShowDataPage();
+        void ShowApStartingPage();
+        void ShowStaConnectingPage();
         void Update();
         void TurnOn();
         void TurnOff();
+        void SetWiFiData(String SSID, String PASSWD, String IP);
 };
 
 #endif

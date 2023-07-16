@@ -5,6 +5,10 @@
 #include "Wire.h"
 #include "U8g2lib.h"
 
+String ssid = "";
+String password = "";
+String ip = "";
+
 /*
 Initialize the Display
 */
@@ -53,11 +57,17 @@ void Display::ShowStartPage() {
 Display SSID and IP for web ui
 */
 void Display::ShowWiFiPage() {
+    const char* SSID = ssid.c_str();
+    const char* PASSWORD = password.c_str();
+    const char* IP = ip.c_str();
     u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_7x14B_tf);
-    u8g2.drawStr(0,10, "Web UI");
-    u8g2.drawStr(0,25, "IP:");
-    u8g2.drawStr(20,25, "0.0.0.0");
+    u8g2.drawUTF8(0,10, "SSID: ");
+    u8g2.drawUTF8(38,10, SSID);
+    u8g2.drawUTF8(0,25, "PWD:");
+    u8g2.drawUTF8(30,25, PASSWORD);
+    u8g2.drawUTF8(0, 40, "IP: ");
+    u8g2.drawUTF8(25, 40, IP);
     u8g2.sendBuffer();
 }
 
@@ -79,6 +89,23 @@ void Display::ShowDataPage() {
     u8g2.drawUTF8(0,25, temp);
     u8g2.drawUTF8(0,40, "Humidity ");
     u8g2.drawUTF8(0,55, hum);
+    u8g2.sendBuffer();
+}
+
+void Display::ShowStaConnectingPage() {
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_7x14B_tf);
+    u8g2.drawStr(20,25, "Please wait...");
+    u8g2.drawStr(0,40, "Connecting to WiFi");
+    u8g2.sendBuffer();
+}
+
+void Display::ShowApStartingPage() {
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_7x14B_tf);
+    u8g2.drawStr(20,25, "Please wait...");
+    //u8g2.drawStr(0,40, "Connecting to WiFi");
+    u8g2.drawStr(10,40, "AP is starting");
     u8g2.sendBuffer();
 }
 
@@ -119,4 +146,8 @@ void Display::TurnOff() {
     u8g2.setPowerSave(1);
 };
 
-
+void Display::SetWiFiData(String SSID, String PASSWD, String IP) {
+    ssid = SSID;
+    password = PASSWD;
+    ip = IP;
+}
