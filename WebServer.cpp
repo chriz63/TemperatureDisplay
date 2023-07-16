@@ -1,8 +1,15 @@
 #include "WebServer.h"
+#include "Sensor.h"
 
 #include "Arduino.h"
 #include "ESPAsyncWebServer.h"
 
+float temperature = 0.0;
+float humidity = 0.0;
+
+/*
+HTML & Javascript code for web ui
+*/
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html>
@@ -102,42 +109,67 @@ const char index_html[] PROGMEM = R"rawliteral(
 </script>
 </html>)rawliteral";
 
+/*
+Processing the data
+*/
 String processor(const String& var){
   //Serial.println(var);
   if(var == "TEMPERATURE"){
-    return String("temperature");
+    return String(temperature);
   }
   else if(var == "HUMIDITY"){
-    return String("humidity");
+    return String(humidity);
   }
   return String();
 }
 
 AsyncWebServer server(80);
 
-WebServer::WebServer() {}
+/*
+Default Constructor for WebServer Class
+Setting the Sensor to be able to read data
+
+@param Sensor sensor -> Gets the sensor
+*/
+WebServer::WebServer(Sensor sensor) {}
 
 void WebServer::Configure() {
     Serial.println("Configuring WebServer");
 
+    // Send processed data
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
         request->send_P(200, "text/html", index_html, processor);
     });
 
+    // Send temperature data
     server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send_P(200, "text/plain", String("temperature").c_str());
+        request->send_P(200, "text/plain", String(temperature).c_str());
     });
 
+    // Send humitidy data
     server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send_P(200, "text/plain", String("humidity").c_str());
+        request->send_P(200, "text/plain", String(humidity).c_str());
     });
 
+    // Send temperature and humidity data as a json
     server.on("/json", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send_P(200, "text/plain", String("{'temperature': " + String("temperature") + ", 'humidity': " + String("humidity") + "}").c_str());
+        request->send_P(200, "text/plain", String("{'temperature': " + String(temperature) + ", 'humidity': " + String(humidity) + "}").c_str());
     });
 }
 
+/*
+Starting the webserver
+*/
 void WebServer::Start() {
     Serial.println("Starting Webserver");
     server.begin();
+}
+
+/*
+Update the data that are shown on web ui
+*/
+void WebServer::Update() {
+    temperature = sensor.GetTemperature();
+    humidity = sensor.GetHumidity();
+    delay(100);
 }

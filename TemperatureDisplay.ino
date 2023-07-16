@@ -26,7 +26,7 @@ Display display(2000,100, sensor);
 
 WiFiSTA wifiClient("ssid", "password");
 
-WebServer webServer;
+WebServer webServer(sensor);
 
 // Initialize all that is needed
 void setup() {
@@ -53,4 +53,5 @@ void setup() {
 void loop() {
     systemLED.Update();
     display.Update();
+    webServer.Update();
 }
