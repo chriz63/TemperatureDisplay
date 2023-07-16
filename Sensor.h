@@ -3,6 +3,9 @@
 
 #include "Arduino.h"
 
+/*
+Default Constructor for Sensor Class
+*/
 class Sensor
 {   
     public:

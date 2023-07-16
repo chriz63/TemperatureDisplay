@@ -5,19 +5,36 @@
 #include "Wire.h"
 #include "U8g2lib.h"
 
+/*
+Initialize the Display
+*/
 U8G2_SH1106_128X64_NONAME_F_HW_I2C 
 u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
+/* 
+Default Constructor for Display Class
+Setting the sensor, on- and offtime for Display
+
+@param Senmsor sensor -> Define a sensor to get temperature data
+@param long onTime -> Define a time where display shows data  
+@param long offTime -> Define a time where display changes data   
+*/
 Display::Display(long on, long off, Sensor sensor) {
     onTime = on;
     offTime = off;
     displayState = "WiFiPage";
 }
 
+/*
+Start the display
+*/
 void Display::Start() {
     u8g2.begin();
 }
 
+/*
+Display a starting screen
+*/
 void Display::ShowStartPage() {
     u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_7x14B_tf);
@@ -26,6 +43,9 @@ void Display::ShowStartPage() {
     u8g2.sendBuffer();
 };
 
+/*
+Display SSID and IP for web ui
+*/
 void Display::ShowWiFiPage() {
     u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_7x14B_tf);
@@ -35,6 +55,13 @@ void Display::ShowWiFiPage() {
     u8g2.sendBuffer();
 }
 
+/*
+Display temperature and humidity data on the display
+
+This method gets temperarture data from the sensor
+converting them into a c style string, we have to do this to be able to 
+display the data on the display
+*/
 void Display::ShowDataPage() {
     String temperature = String(sensor.GetTemperature()) + " °C";
     String humidity = String(sensor.GetHumidity()) + " %";
@@ -49,6 +76,13 @@ void Display::ShowDataPage() {
     u8g2.sendBuffer();
 }
 
+/*
+Update the Display
+Display data for given on- and offtimes from constructor
+
+NodeMCU is based on a single core processor because of this there is no way for a multithreading procedure
+We have to remember the on- and off times and update the ledState, so multiple LED's can blink simultaneously with various time
+*/
 void Display::Update() {
     unsigned long currentMillis = millis();
     if ((displayState == "WiFiPage") && (currentMillis - previousMillis >= onTime))
