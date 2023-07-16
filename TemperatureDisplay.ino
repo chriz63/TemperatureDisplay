@@ -2,6 +2,7 @@
 
 // All imports that are needed
 #include "LED.h"
+#include "DisplayButton.h"
 #include "WiFiAP.h"
 #include "WiFiSTA.h"
 #include "WebServer.h"
@@ -20,6 +21,8 @@ LED systemLED(2, 1000, 1000);
 Sensor sensor;
 
 Display display(2000,100, sensor);
+
+DisplayButton displayButton(0, display);
 
 // Open access point with ssid and password in arguments
 //WiFiAP accessPoint("TemperatureDisplayWiFi", "!1q2w3e4R!");
@@ -54,4 +57,5 @@ void loop() {
     systemLED.Update();
     display.Update();
     webServer.Update();
+    displayButton.Observe();
 }

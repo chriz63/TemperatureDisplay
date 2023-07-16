@@ -19,14 +19,18 @@ class Display
         long offTime;
         unsigned long previousMillis;
         String displayState;
+        bool displayOn;
 
     public:
+        Display();
         Display(long onTime, long offTime, Sensor sensor);
         void Start();
         void ShowStartPage();
         void ShowWiFiPage();
         void ShowDataPage();
         void Update();
+        void TurnOn();
+        void TurnOff();
 };
 
 #endif

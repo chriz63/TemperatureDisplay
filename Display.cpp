@@ -11,6 +11,11 @@ Initialize the Display
 U8G2_SH1106_128X64_NONAME_F_HW_I2C 
 u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
+/*
+Default Constructor for Display Class
+*/
+Display::Display() {}
+
 /* 
 Default Constructor for Display Class
 Setting the sensor, on- and offtime for Display
@@ -23,6 +28,7 @@ Display::Display(long on, long off, Sensor sensor) {
     onTime = on;
     offTime = off;
     displayState = "WiFiPage";
+    displayOn = true;
 }
 
 /*
@@ -98,3 +104,19 @@ void Display::Update() {
         Display::ShowDataPage();
     }
 }
+
+/*
+Turn the display on
+*/
+void Display::TurnOn() {
+    u8g2.setPowerSave(0);
+};
+
+/*
+Turn the display off
+*/
+void Display::TurnOff() {
+    u8g2.setPowerSave(1);
+};
+
+
